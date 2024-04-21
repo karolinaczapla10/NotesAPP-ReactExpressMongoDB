@@ -49,20 +49,17 @@ async function registerUser(username, password) {
   try {
     // Validate username and password
     if (!username || !password) {
-      console.error('Username and password are required');
-      return { success: false, message: 'Username and password are required' };
+      throw new Error('Username and password are required');
     }
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      console.error('User already exists');
-      return { success: false, message: 'User already exists' };
+      throw new Error('User already exists');
     }
 
     const user = new User({ username, password });
     await user.save();
     console.log('User registered successfully');
-    return { success: true, message: 'User registered successfully' };
   } catch (error) {
     console.error(error);
     throw error;
@@ -73,8 +70,7 @@ async function loginUser(username, password) {
   try {
     // Validate username and password
     if (!username || !password) {
-      console.error('Username and password are required');
-      return { success: false, message: 'Username and password are required' };
+      throw new Error('Username and password are required');
     }
 
     const user = await User.findOne({ username });
@@ -84,14 +80,10 @@ async function loginUser(username, password) {
       console.log('User logged in successfully');
       console.log(validPassword);
       if (validPassword) {
-        return { success: true, message: 'User logged in successfully', user };
-      } else {
-        console.error('Invalid username or password');
-        return { success: false, message: 'Invalid username or password' };
+        return user;
       }
     } else {
-      console.error('Invalid username or password');
-      return { success: false, message: 'Invalid username or password' };
+      console.log('Invalid username or password');
     }
   } catch (error) {
     console.error(error);
